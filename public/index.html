@@ -2,32 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Vonzie Panel Controller</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>WhatsApp Bug Panel</title>
+  <script src="script.js" defer></script>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
-  <div class="bg-gray-800 p-6 rounded-2xl shadow-xl w-96">
-    <h1 class="text-xl font-bold text-center mb-4">Vonzie Bug Panel</h1>
-    <input id="number" type="text" placeholder="62xxxx" 
-           class="w-full p-2 rounded-lg text-black mb-4" />
-    <button onclick="sendBug()" 
-            class="w-full bg-red-600 hover:bg-red-700 py-2 rounded-lg font-bold">
-      🚀 Kirim Bug
-    </button>
-    <p id="status" class="text-center mt-4"></p>
-  </div>
-
-  <script>
-    async function sendBug() {
-      const number = document.getElementById("number").value;
-      const res = await fetch("/send-bug", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ number })
-      });
-      const data = await res.json();
-      document.getElementById("status").innerText = data.msg;
-    }
-  </script>
+<body>
+  <h1>🔥 WhatsApp Bug Panel</h1>
+  <button onclick="startBot()">Start Bot</button>
+  <hr>
+  <input id="nomor" placeholder="62xxxxxx">
+  <select id="type">
+    <option value="Lite">Bug Lite</option>
+    <option value="Combo">Bug Combo</option>
+    <option value="Overkill">Bug Overkill</option>
+  </select>
+  <button onclick="sendBug()">Kirim Bug</button>
+  <p id="status"></p>
 </body>
 </html>
