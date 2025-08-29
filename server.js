@@ -1,23 +1,30 @@
-import express from "express"
-import { WebSocket } from "ws"
-import dotenv from "dotenv"
-dotenv.config()
+const express = require("express");
+const { spawn } = require("child_process");
+const path = require("path");
 
-const app = express()
-const port = process.env.PORT || 3000
+const app = express();
+app.use(express.json());
+app.use(express.static("public"));
 
-app.use(express.static("public"))
-app.use(express.json())
+let botProcess = null;
 
-// Kirim perintah ke bot lewat WebSocket
-app.post("/send", (req, res) => {
-    const { command } = req.body
-    const ws = new WebSocket("ws://localhost:8080")
-    ws.on("open", () => {
-        ws.send(command)
-        ws.close()
-    })
-    res.json({ status: "sent", command })
-})
+// Jalankan bot
+app.get("/start-bot", (req, res) => {
+  if (botProcess) return res.send("Bot sudah jalan 🚀");
+  botProcess = spawn("node", ["bot.js"], { stdio: "inherit" });
+  res.send("Bot berhasil dijalankan ✅");
+});
 
-app.listen(port, () => console.log(`🌐 Panel running http://localhost:${port}`))
+// Kirim command bug
+app.post("/send-bug", (req, res) => {
+  const { type, nomor } = req.body;
+  if (!botProcess) return res.status(400).send("Bot belum dijalankan ❌");
+
+  // Simpan ke temporary file agar dibaca oleh bot
+  const fs = require("fs");
+  fs.writeFileSync("command.json", JSON.stringify({ type, nomor }));
+  res.send(`Bug ${type} dikirim ke ${nomor}`);
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Server jalan di http://localhost:${PORT}`));
